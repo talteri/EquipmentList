@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Tomorrowland Pack">
+    <title>רשימת ציוד לטומורולנד ואמסטרדם</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.27/sweetalert2.all.min.js"></script>
+    
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --primary-color: #007AFF;
+            --success-color: #34C759;
+            --danger-color: #FF3B30;
+            --warning-color: #FF9500;
+        }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        input, textarea {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            direction: rtl;
+            padding: 0;
+            margin: 0;
+            font-size: 16px;
+            overflow-x: hidden;
+        }
+
+        .mobile-container {
+            max-width: 100%;
+            padding: 0.5rem;
+        }
+
+        .main-title {
+            text-align: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            margin: 1rem 0;
+            line-height: 1.3;
+        }
+
+        .stats-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+
+        .stat-item {
+            text-align: center;
+            color: white;
+            padding: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .category-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, var(--primary-color), #5856D6);
+            color: white;
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .category-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+            flex: 1;
+        }
+
+        .progress-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .progress-badge {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .chevron {
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .category-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .category-content.expanded {
+            max-height: 2000px;
+        }
+
+        .category-header.expanded .chevron {
+            transform: rotate(180deg);
+        }
+
+        .item-row {
+            background: rgba(255, 255, 255, 0.05);
+            margin: 0.5rem;
+            padding: 0.75rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .item-row.completed {
+            background: rgba(52, 199, 89, 0.2);
+            border-color: var(--success-color);
+        }
+
+        .item-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .item-checkbox {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .item-checkbox.checked {
+            background: var(--success-color);
+            border-color: var(--success-color);
+        }
+
+        .item-checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .item-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-name {
+            color: white;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+            word-wrap: break-word;
+        }
+
+        .item-name input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-weight: 500;
+            font-size: 0.9rem;
+            width: 100%;
+            padding: 0;
+            outline: none;
+        }
+
+        .item-notes {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
+        }
+
+        .item-notes input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.8rem;
+            width: 100%;
+            padding: 0.25rem 0.5rem;
+            outline: none;
+        }
+
+        .item-notes input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover, .action-btn:active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .delete-btn {
+            background: rgba(255, 59, 48, 0.2);
+            color: var(--danger-color);
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, var(--success-color), #30D158);
+            border: none;
+            color: white;
+            border-radius: 12px;
+            padding: 0.75rem;
+            margin: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: calc(100% - 1rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .add-btn:active {
+            transform: scale(0.98);
+        }
+
+        .progress-bar-container {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            height: 6px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--success-color), #30D158);
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .floating-stats {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 1.3rem;
+                margin: 0.5rem 0;
+            }
+            
+            .mobile-container {
+                padding: 0.25rem;
+            }
+            
+            .item-row {
+                margin: 0.25rem;
+                padding: 0.5rem;
+            }
+            
+            .category-header {
+                padding: 0.75rem;
+            }
+        }
+
+        /* iOS Safari specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            .category-content {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <h1 class="main-title">🎪 טומורולנד & אמסטרדם<br><small style="font-size: 0.7em; opacity: 0.8;">רשימת ציוד ל-8 ימים</small></h1>
+        
+        <div class="stats-card">
+            <div class="row g-0">
+                <div class="col-3 stat-item">
+                    <span class="stat-number" id="totalItems">0</span>
+                    <div class="stat-label">סה"כ</div>
+                </div>
+                <div class="col-3 stat-item">
+                    <span class="stat-number" id="completedItems">0</span>
+                    <div class="stat-label">הושלמו</div>
+                </div>
+                <div class="col-3 stat-item">
+                    <span class="stat-number" id="completionPercentage">0%</span>
+                    <div class="stat-label">התקדמות</div>
+                </div>
+                <div class="col-3 stat-item">
+                    <span class="stat-number" id="remainingItems">0</span>
+                    <div class="stat-label">נותרו</div>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="mainProgressBar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div id="categoriesContainer"></div>
+    </div>
+
+    <div class="floating-stats" id="floatingStats">0%</div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Initial data structure
+        let packingData = {
+            "🏕️ קמפינג": [
+                { name: "אוהל", notes: "אם לא pre-pitched", completed: false },
+                { name: "מזרן מתנפח", notes: "", completed: false },
+                { name: "שק שינה", notes: "", completed: false },
+                { name: "שמיכה דקה", notes: "", completed: false },
+                { name: "כרית קטנה", notes: "", completed: false },
+                { name: "פנס ראש", notes: "", completed: false },
+                { name: "שקיות זבל", notes: "", completed: false },
+                { name: "Power bank x2", notes: "", completed: false },
+                { name: "כיסא מתקפל", notes: "אופציונלי", completed: false }
+            ],
+            "👕 בגדים": [
+                { name: "חולצות קצרות", notes: "6-8", completed: false },
+                { name: "חולצות ארוכות", notes: "1-2", completed: false },
+                { name: "מכנסיים קצרים", notes: "3-4", completed: false },
+                { name: "מכנסיים ארוכים", notes: "1-2", completed: false },
+                { name: "תחתונים", notes: "8-10", completed: false },
+                { name: "גרביים", notes: "8-10", completed: false },
+                { name: "בגד ים", notes: "אופציונלי", completed: false },
+                { name: "מעיל גשם", notes: "", completed: false },
+                { name: "קפוצ'ון", notes: "ללילות", completed: false },
+                { name: "נעלי הליכה", notes: "", completed: false },
+                { name: "כפכפים", notes: "למקלחות", completed: false },
+                { name: "כובע", notes: "", completed: false },
+                { name: "משקפי שמש", notes: "", completed: false }
+            ],
+            "🧼 היגיינה": [
+                { name: "מברשת שיניים", notes: "קטנה", completed: false },
+                { name: "משחת שיניים", notes: "מיני", completed: false },
+                { name: "דאודורנט", notes: "", completed: false },
+                { name: "נייר טואלט", notes: "חבילות קטנות", completed: false },
+                { name: "מגבונים לחים", notes: "", completed: false },
+                { name: "קרם הגנה", notes: "SPF גבוה", completed: false },
+                { name: "ג'ל חיטוי", notes: "", completed: false },
+                { name: "אטמי אוזניים", notes: "לשינה", completed: false },
+                { name: "מסכת שינה", notes: "אופציונלי", completed: false }
+            ],
+            "🎪 פסטיבל": [
+                { name: "שלוקר ריק", notes: "", completed: false },
+                { name: "כוס רב פעמית", notes: "", completed: false },
+                { name: "תיק קטן", notes: "ליום", completed: false },
+                { name: "דגל קטן", notes: "אופציונלי", completed: false },
+                { name: "כרטיסים", notes: "", completed: false },
+                { name: "Power bank נוסף", notes: "", completed: false },
+                { name: "טישו/מגבונים", notes: "", completed: false },
+                { name: "Earplugs איכותיים", notes: "", completed: false },
+                { name: "GoPro + מוט", notes: "70 ס\"מ", completed: false },
+                { name: "כיסוי גשם לפון", notes: "", completed: false },
+                { name: "מזומן", notes: "", completed: false }
+            ],
+            "🏨 אמסטרדם": [
+                { name: "בגדים נוחים", notes: "", completed: false },
+                { name: "נעלי הליכה", notes: "", completed: false },
+                { name: "ג'קט קל", notes: "", completed: false },
+                { name: "תיק יום", notes: "daypack", completed: false },
+                { name: "כרטיס תחבורה", notes: "chipkaart", completed: false },
+                { name: "מטען נייד", notes: "", completed: false },
+                { name: "בגד ערב", notes: "למסעדה", completed: false },
+                { name: "מתאם חשמל", notes: "Type E/F", completed: false }
+            ],
+            "📄 מסמכים": [
+                { name: "דרכון", notes: "", completed: false },
+                { name: "כרטיסי טיסה", notes: "", completed: false },
+                { name: "ביטוח נסיעות", notes: "", completed: false },
+                { name: "כרטיס טומורולנד", notes: "", completed: false },
+                { name: "אישור מלון", notes: "", completed: false },
+                { name: "צילומי מסמכים", notes: "בפלאפון", completed: false },
+                { name: "כרטיסי אשראי", notes: "", completed: false },
+                { name: "מזומן באירו", notes: "", completed: false }
+            ]
+        };
+
+        let expandedCategories = new Set();
+
+        function renderCategories() {
+            const container = document.getElementById('categoriesContainer');
+            container.innerHTML = '';
+
+            Object.keys(packingData).forEach(categoryName => {
+                const categoryItems = packingData[categoryName];
+                const completedCount = categoryItems.filter(item => item.completed).length;
+                const totalCount = categoryItems.length;
+                const progressPercentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+                const isExpanded = expandedCategories.has(categoryName);
+
+                const categoryHtml = `
+                    <div class="category-card">
+                        <div class="category-header ${isExpanded ? 'expanded' : ''}" onclick="toggleCategory('${categoryName}')">
+                            <h3 class="category-title">${categoryName}</h3>
+                            <div class="progress-info">
+                                <span class="progress-badge">${completedCount}/${totalCount}</span>
+                                <i class="bi bi-chevron-down chevron"></i>
+                            </div>
+                        </div>
+                        <div class="category-content ${isExpanded ? 'expanded' : ''}" id="content-${categoryName.replace(/[^a-zA-Z0-9]/g, '')}">
+                            <div class="items-container">
+                                ${categoryItems.map((item, index) => createItemHtml(categoryName, item, index)).join('')}
+                            </div>
+                            <button class="add-btn" onclick="addNewItem('${categoryName}')">
+                                <i class="bi bi-plus-circle"></i>
+                                הוסף פריט
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += categoryHtml;
+            });
+
+            updateStatistics();
+        }
+
+        function createItemHtml(categoryName, item, index) {
+            return `
+                <div class="item-row ${item.completed ? 'completed' : ''}" data-category="${categoryName}" data-index="${index}">
+                    <div class="item-content">
+                        <div class="item-checkbox ${item.completed ? 'checked' : ''}" onclick="toggleItem('${categoryName}', ${index})"></div>
+                        <div class="item-details">
+                            <div class="item-name">
+                                <input type="text" value="${item.name}" 
+                                       onchange="updateItemName('${categoryName}', ${index}, this.value)"
+                                       onblur="this.style.pointerEvents='none'" 
+                                       onfocus="this.style.pointerEvents='auto'">
+                            </div>
+                            ${item.notes ? `<div class="item-notes">
+                                <input type="text" placeholder="הערות..." value="${item.notes}" 
+                                       onchange="updateItemNotes('${categoryName}', ${index}, this.value)"
+                                       onblur="this.style.pointerEvents='none'" 
+                                       onfocus="this.style.pointerEvents='auto'">
+                            </div>` : `<div class="item-notes">
+                                <input type="text" placeholder="הוסף הערה..." value="" 
+                                       onchange="updateItemNotes('${categoryName}', ${index}, this.value)"
+                                       onblur="this.style.pointerEvents='none'" 
+                                       onfocus="this.style.pointerEvents='auto'">
+                            </div>`}
+                        </div>
+                        <div class="item-actions">
+                            <button class="action-btn delete-btn" onclick="deleteItem('${categoryName}', ${index})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleCategory(categoryName) {
+            if (expandedCategories.has(categoryName)) {
+                expandedCategories.delete(categoryName);
+            } else {
+                expandedCategories.add(categoryName);
+            }
+            renderCategories();
+        }
+
+        function toggleItem(categoryName, index) {
+            packingData[categoryName][index].completed = !packingData[categoryName][index].completed;
+            
+            if (packingData[categoryName][index].completed) {
+                // Haptic feedback simulation
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+                
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    background: 'rgba(52, 199, 89, 0.9)',
+                    color: 'white',
+                    width: '90%'
+                });
+
+                Toast.fire({
+                    icon: 'success',
+                    title: '✅ הושלם!'
+                });
+            }
+            
+            renderCategories();
+        }
+
+        function updateItemName(categoryName, index, newName) {
+            packingData[categoryName][index].name = newName;
+        }
+
+        function updateItemNotes(categoryName, index, newNotes) {
+            packingData[categoryName][index].notes = newNotes;
+        }
+
+        async function addNewItem(categoryName) {
+            const { value: itemName } = await Swal.fire({
+                title: 'פריט חדש',
+                input: 'text',
+                inputPlaceholder: 'שם הפריט...',
+                showCancelButton: true,
+                confirmButtonText: 'הוסף',
+                cancelButtonText: 'ביטול',
+                confirmButtonColor: '#34C759',
+                width: '90%',
+                background: 'rgba(255, 255, 255, 0.95)',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'אנא הכנס שם לפריט'
+                    }
+                }
+            });
+
+            if (itemName) {
+                packingData[categoryName].push({
+                    name: itemName,
+                    notes: '',
+                    completed: false
+                });
+                
+                if (navigator.vibrate) {
+                    navigator.vibrate(100);
+                }
+                
+                renderCategories();
+            }
+        }
+
+        async function deleteItem(categoryName, index) {
+            const result = await Swal.fire({
+                title: 'מחק פריט?',
+                text: `"${packingData[categoryName][index].name}"`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#FF3B30',
+                cancelButtonColor: '#007AFF',
+                confirmButtonText: 'מחק',
+                cancelButtonText: 'ביטול',
+                width: '90%',
+                background: 'rgba(255, 255, 255, 0.95)'
+            });
+
+            if (result.isConfirmed) {
+                packingData[categoryName].splice(index, 1);
+                
+                if (navigator.vibrate) {
+                    navigator.vibrate([50, 50, 50]);
+                }
+                
+                renderCategories();
+            }
+        }
+
+        function updateStatistics() {
+            let totalItems = 0;
+            let completedItems = 0;
+
+            Object.values(packingData).forEach(categoryItems => {
+                totalItems += categoryItems.length;
+                completedItems += categoryItems.filter(item => item.completed).length;
+            });
+
+            const completionPercentage = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+            const remainingItems = totalItems - completedItems;
+
+            document.getElementById('totalItems').textContent = totalItems;
+            document.getElementById('completedItems').textContent = completedItems;
+            document.getElementById('completionPercentage').textContent = completionPercentage + '%';
+            document.getElementById('remainingItems').textContent = remainingItems;
+            document.getElementById('floatingStats').textContent = completionPercentage + '%';
+            document.getElementById('mainProgressBar').style.width = completionPercentage + '%';
+
+            if (completionPercentage === 100 && totalItems > 0) {
+                if (navigator.vibrate) {
+                    navigator.vibrate([200, 100, 200, 100, 200]);
+                }
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: '🎉 כל הכבוד! 🎉',
+                    text: 'סיימת את כל הפריטים!',
+                    confirmButtonText: 'יאללה לטומורולנד! 🎪',
+                    confirmButtonColor: '#34C759',
+                    width: '90%',
+                    background: 'rgba(255, 255, 255, 0.95)'
+                });
+            }
+        }
+
+        // Prevent zoom on double tap
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        let lastTouchEnd = 0;
+
+        // Initialize with first category expanded
+        expandedCategories.add('🏕️ קמפינג');
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCategories();
+            
+            // Add iOS-specific optimizations
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                document.body.style.webkitUserSelect = 'none';
+                document.body.style.webkitTouchCallout = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
